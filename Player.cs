@@ -117,7 +117,7 @@ public class Player : MonoBehaviour
 
     if (inRange == true && joystick.isPressed && comboWindowActive)
     {
-      state = comboSequence[++currentComboIndex];
+      state = comboSequence[currentComboIndex];
     }
     //if comboWindowIsOpen and joystick.isPressed. 
   }
@@ -165,17 +165,13 @@ public class Player : MonoBehaviour
     //set comboIndex to increment by 1. 
     //start while loop to start counting down time
     //once while loop ends. reset comboindex back to 0.
-    if (comboWindowActive)
-    {
-      return;
-    }
     CR_HANDLE_COMBOWINDOW = StartCoroutine(CR_OpenComboWindow(charAnimator.comboWindowOpenTime));
   }
 
   private IEnumerator CR_OpenComboWindow(float comboTime)
   {
     float time = 0f;
-    // currentComboIndex++;
+    currentComboIndex++;
     comboWindowActive = true;
     // State previousState = state;
     //cache current INDEX. index will represent current move.
