@@ -40,7 +40,7 @@ public class BoxPreFab : MonoBehaviour
     if (other.CompareTag("DummyHurtBox"))
     {
       //start ComboWindowTimerOpen ON PLAYER script.
-      player.OpenComboWindow();
+      // player.OpenComboWindow();
       dummyCpu.animateStun();
     }
   }

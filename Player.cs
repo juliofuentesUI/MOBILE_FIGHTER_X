@@ -46,6 +46,8 @@ public class Player : MonoBehaviour
 
   private bool comboWindowActive = false;
 
+  private float timePressedDown;
+
   private Coroutine CR_HANDLE_COMBOWINDOW;
   private int currentComboIndex = 0;
   private DummyCPU dummyCpu;
@@ -74,12 +76,13 @@ public class Player : MonoBehaviour
   void Update()
   {
     //PUT A GUARD CLAUSE WRAPPING .move() and attemptAttack();
-    if (this.canMove)
-    {
-      //IF they are NOT ATTACKING. Attempt to move() or attemptAttack();
-      movement.Move();
-    }
-    attemptAttack();
+    // if (this.canMove)
+    // {
+    //   //IF they are NOT ATTACKING. Attempt to move() or attemptAttack();
+    //   movement.Move();
+    // }
+    // attemptAttack();
+    AttackOrMove();
 
     switch (state)
     {
@@ -106,21 +109,62 @@ public class Player : MonoBehaviour
     }
   }
 
-  void attemptAttack()
+  //
+  void AttackOrMove()
   {
-    if (inRange == true && joystick.isPressed == false && !comboWindowActive)
+    if (this.canMove)
     {
-      state = comboSequence[currentComboIndex];
-      // state = State.LowMediumKick;
-      this.canMove = false;
+      //IF they are NOT ATTACKING. Attempt to move() or attemptAttack();
+      movement.Move();
     }
 
-    if (inRange == true && joystick.isPressed && comboWindowActive)
+    if (joystick.isPressed)
     {
-      state = comboSequence[currentComboIndex];
+      timePressedDown += Time.deltaTime;
+      //guard clause that were already counting.
     }
-    //if comboWindowIsOpen and joystick.isPressed. 
+
+    if (joystick.isPressed == false)
+    {
+      if (timePressedDown > 0.05f && timePressedDown < 0.1f)
+      {
+        Debug.Log("ATTACK!!");
+        this.canMove = false;
+        state = comboSequence[0];
+        timePressedDown = 0;
+      }
+      else
+      {
+        timePressedDown = 0;
+      }
+    }
+
+    //whatever i do here, make sure movement.Move() comes after.
+
+    // DIFFERENTIATE INPUT BETWEEN TAPPED RELEASE AND TAP AND HELD.
+    // A MOVE THAT IS TAP HELD IS AN ATTACK.
+    //THE END GOAL OF THIS IS THAT ken won't be over-riding attack2 back to attack1
+    //automatically. we want more manualness.
+    //the problem was when i was in attack 2, the code would want ken to attack1
   }
+
+  // void attemptAttack()
+  // {
+  //   if (inRange == true && joystick.isPressed == false && !comboWindowActive)
+  //   {
+  //     state = comboSequence[currentComboIndex];
+  //     // state = State.LowMediumKick;
+  //     this.canMove = false;
+  //   }
+
+  //   if (inRange == true && joystick.isPressed && comboWindowActive)
+  //   {
+  //     state = comboSequence[currentComboIndex];
+  //   }
+  //   //if comboWindowIsOpen and joystick.isPressed. 
+  // }
+
+
 
   public void ChangeState(string newState)
   {
